@@ -1,0 +1,91 @@
+-- Title
+Builder Module
+
+-- Introduction
+Welcome! Builder Module is a module that will help roblox developers to create building animations for models. 
+Here, i'll teach you how to get started with Builder Module.
+
+This documentation is still in progress. If you find any issues, please file an issue on the Rojo website issue tracker!
+
+
+-- Installation
+All you need to get the module from this link: Roblox Marketplace Builder Module
+
+After getting the module, you need to put module inside ReplicatedStorage.
+
+
+-- Starting Up
+To create a building animation we need to firts define module in our script(it can work for local and server scripts).
+local BuilderModule = require(path.to.your.module) --You need to create path to module like: local BuilderModule = require(game:GetService(ReplicatedStorage)["iyiinsan5555's_CustomBuilderModule"])
+
+After that all you need to get ready your model in script.
+
+Example Script:
+
+local BuilderModule :Module = require(game:GetService(ReplicatedStorage)["iyiinsan5555's_CustomBuilderModule"])
+local ExampleModel :Model = workspace:WaitForChild("ExampleModel")
+
+BuilderModule.MakeModelReadyForBuild(ExampleModel)
+
+Alright! After making model ready for build. You can create build animation whenever you want by calling this function:
+BuilderModule.Build(BuildingMode :string, Model :Model, WaitTimeBetweenEachPart :number, CustomTweenInfo :TweenInfo)
+
+--Building modes 
+You can pick one of the building mode by typing
+BuilderModule.BuildingModes["Whatever You Want"]
+The building mode is gonna change building animation.
+List of building modes:
+ ClassicFadeOut
+ ComesFromRandomPosition
+ ComesFromRandomPositionWithFade
+ GrowthAnimation
+ GrowthAnimationWithFade
+ HorizontalAnimation
+ VerticalAnimation
+ ComesFromCenter
+ ComesFromCenterWithFade
+ ComesFromUp
+ ComesFromUpWithFade
+ ColorChange
+ RotationAnimation
+
+Here is the videos of all building modes:
+--Video of building modes with their names
+
+--Model
+"Model" is gonna be the model that will animation applied.
+
+--WaitTimeBetweenEachPart 
+This properity is the time between each part of model that will animated.
+--Example video of what WaitTimeBetweenEachPart does.
+
+--CustomTweenInfo
+"CustomTweenInfo" is a TweenInfo properity. The TweenInfo data type stores parameters for TweenService:Create() to specify the behavior of the tween. 
+So it's basically customizes animations.
+If you don't know what's TweenInfo is check out this link: TweenInfo for Roblox Developers
+
+Example TweenInfo:
+local CustomTweenInfo = TweenInfo.new(0.1 ,Enum.EasingStyle.Linear ,Enum.EasingDirection.InOut ,0 ,false , 0)
+
+Exmaple Script:
+local BuilderModule :Module = require(game:GetService(ReplicatedStorage)["iyiinsan5555's_CustomBuilderModule"])
+local ExampleModel :Model = workspace:WaitForChild("ExampleModel")
+
+BuilderModule.MakeModelReadyForBuild(ExampleModel)
+
+task.wait(5)
+
+BuilderModule.Build(CustomBuilderModule.BuildingModes.ClassicFadeOut, Model, 0, nil )
+
+--Settings
+There is only 2 settings that you can modify currently. This number could change in the future.
+To access the settings you need to tyype
+
+BuilderModule.Settings.["BuildingModeName"] --> For now you only can change settings of "ComesFromUp" and "ColorChange".
+so to change how height parts come 
+BuilderModule.Settings.ComesFromUp.HeightAmount = Amount You Would Like (Has to be number, Defualt is 50)
+to change defualt color of ColorChange
+BuilderModule.Settings.ColorChange.StartColor = Color You Would Like (Has to be Color3, Defualt is Color3.fromRGB(255,255,255))
+
+--Contributors
+iyiinsan5555 (Developed module and website)

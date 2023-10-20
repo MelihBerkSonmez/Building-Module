@@ -24,6 +24,16 @@ local function CreateSortedTableFromModel(Model :Model)
 
 end
 
+local function AfterAnimatingBasePart(BasePart :BasePart)
+    
+    if not BasePart:IsA("BasePart") then
+        return
+    end
+
+    BasePart.CanCollide = true
+
+end
+
 
 local CustomBuilderModule = {}
 
@@ -34,7 +44,25 @@ CustomBuilderModule.BuildingModes = {
     GrowthAnimation = "GrowthAnimation",
     GrowthAnimationWithFade = "GrowthAnimationWithFade",
     HorizontalAnimation = "HorizontalAnimation",
-    VerticalAnimation = "VerticalAnimation"
+    VerticalAnimation = "VerticalAnimation",
+    ComesFromCenter = "ComesFromCenter",
+    ComesFromCenterWithFade = "ComesFromCenterWithFade",
+    ComesFromUp = "ComesFromUp",
+    ComesFromUpWithFade = "ComesFromUpWithFade",
+    ColorChange = "ColorChange",
+    RotationAnimation = "RotationAnimation",
+
+}
+
+CustomBuilderModule.Settings = {
+
+    ComesFromUp = {
+        HeightAmount = 50
+    },
+
+    ColorChange = {
+        StartColor = Color3.fromRGB(255,255,255)
+    }
 
 }
 
@@ -44,6 +72,7 @@ function CustomBuilderModule.MakeModelReadyForBuild(Model :Model)
 
         if Thing:IsA("BasePart") then
             Thing.Transparency = 1
+            Thing.CanCollide = false
         end
 
     end
@@ -71,6 +100,8 @@ function CustomBuilderModule.ClassicFadeOut(Model :Model, WaitTimeBetweenEachPar
         
         local Tween = TweenService:Create(BasePart, Tween_Info, {Transparency = 0})
         Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
 
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
@@ -100,6 +131,8 @@ function CustomBuilderModule.ComesFromRandomPosition(Model :Model, WaitTimeBetwe
         local Tween = TweenService:Create(BasePart, Tween_Info, {CFrame = GoalCFrame })
         Tween:Play()
 
+        AfterAnimatingBasePart(BasePart)
+
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
         end
@@ -126,6 +159,8 @@ function CustomBuilderModule.ComesFromRandomPositionWithFade(Model :Model, WaitT
         
         local Tween = TweenService:Create(BasePart, Tween_Info, {Transparency = 0, CFrame = GoalCFrame })
         Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
 
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
@@ -156,6 +191,8 @@ function CustomBuilderModule.GrowthAnimation(Model :Model, WaitTimeBetweenEachPa
         local Tween = TweenService:Create(BasePart, Tween_Info, {Size = GoalSize })
         Tween:Play()
 
+        AfterAnimatingBasePart(BasePart)
+
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
         end
@@ -180,6 +217,8 @@ function CustomBuilderModule.GrowthAnimationWithFade(Model :Model, WaitTimeBetwe
         
         local Tween = TweenService:Create(BasePart, Tween_Info, {Size = GoalSize, Transparency = 0 })
         Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
 
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
@@ -207,6 +246,8 @@ function CustomBuilderModule.HorizontalAnimation(Model :Model, WaitTimeBetweenEa
         local Tween = TweenService:Create(BasePart, Tween_Info, {CFrame = GoalCFrame, Transparency = 0})
         Tween:Play()
 
+        AfterAnimatingBasePart(BasePart)
+
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
         end
@@ -232,6 +273,8 @@ function CustomBuilderModule.VerticalAnimation(Model :Model, WaitTimeBetweenEach
         local Tween = TweenService:Create(BasePart, Tween_Info, {CFrame = GoalCFrame, Transparency = 0})
         Tween:Play()
 
+        AfterAnimatingBasePart(BasePart)
+
         if WaitTimeBetweenEachPart then
             task.wait(WaitTimeBetweenEachPart)
         end
@@ -239,5 +282,175 @@ function CustomBuilderModule.VerticalAnimation(Model :Model, WaitTimeBetweenEach
     end
 end
 
+function CustomBuilderModule.ComesFromCenter(Model: Model, WaitTimeBetweenEachPart: number, CustomTweenInfo: TweenInfo)
+
+    local ThingsTable = CreateSortedTableFromModel(Model)
+
+    local Tween_Info = CustomTweenInfo or TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
+
+    CustomBuilderModule.MakeModelReadyForBuild(Model)
+    
+    local CenterBasePart = ThingsTable.BaseParts[1]
+    local CenterCFrame = CenterBasePart.CFrame
+    
+    for _, BasePart in pairs(ThingsTable.BaseParts) do
+
+        local GoalCFrame = BasePart.CFrame
+
+        local RandomizedAngleCFrame = CFrame.Angles(math.random(math.rad(-100),math.rad(100)),math.random(math.rad(-100),math.rad(100)),math.random(math.rad(-100),math.rad(100)))
+
+        BasePart.CFrame = CenterCFrame * RandomizedAngleCFrame
+        BasePart.Transparency = 0
+
+        local Tween = TweenService:Create(BasePart, Tween_Info, {CFrame = GoalCFrame})
+        Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
+        
+        if WaitTimeBetweenEachPart then
+            task.wait(WaitTimeBetweenEachPart)
+        end
+
+    end
+end
+
+function CustomBuilderModule.ComesFromCenterWithFade(Model: Model, WaitTimeBetweenEachPart: number, CustomTweenInfo: TweenInfo)
+
+    local ThingsTable = CreateSortedTableFromModel(Model)
+
+    local Tween_Info = CustomTweenInfo or TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
+
+    CustomBuilderModule.MakeModelReadyForBuild(Model)
+    
+    local CenterBasePart = ThingsTable.BaseParts[1]
+    local CenterCFrame = CenterBasePart.CFrame
+    
+    for _, BasePart in pairs(ThingsTable.BaseParts) do
+
+        local GoalCFrame = BasePart.CFrame
+
+        local RandomizedAngleCFrame = CFrame.Angles(math.random(math.rad(-100),math.rad(100)),math.random(math.rad(-100),math.rad(100)),math.random(math.rad(-100),math.rad(100)))
+        BasePart.CFrame = CenterCFrame * RandomizedAngleCFrame
+
+        local Tween = TweenService:Create(BasePart, Tween_Info, {Transparency = 0, CFrame = GoalCFrame})
+        Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
+        
+        if WaitTimeBetweenEachPart then
+            task.wait(WaitTimeBetweenEachPart)
+        end
+
+    end
+end
+
+function CustomBuilderModule.ComesFromUp(Model: Model, WaitTimeBetweenEachPart: number, CustomTweenInfo: TweenInfo)
+
+    local ThingsTable = CreateSortedTableFromModel(Model)
+
+    local Tween_Info = CustomTweenInfo or TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
+
+    CustomBuilderModule.MakeModelReadyForBuild(Model)
+    
+    for _, BasePart in pairs(ThingsTable.BaseParts) do
+
+        local GoalCFrame = BasePart.CFrame
+        local UpCFrame = GoalCFrame:ToWorldSpace(CFrame.new(Vector3.new(0, CustomBuilderModule.Settings.ComesFromUp.HeightAmount, 0)))
+
+        BasePart.Transparency = 0
+        BasePart.CFrame = UpCFrame
+
+        local Tween = TweenService:Create(BasePart, Tween_Info, {CFrame = GoalCFrame})
+        Tween:Play()
+        
+        AfterAnimatingBasePart(BasePart)
+
+        if WaitTimeBetweenEachPart then
+            task.wait(WaitTimeBetweenEachPart)
+        end
+
+    end
+end
+
+
+function CustomBuilderModule.ComesFromUpWithFade(Model: Model, WaitTimeBetweenEachPart: number, CustomTweenInfo: TweenInfo)
+
+    local ThingsTable = CreateSortedTableFromModel(Model)
+
+    local Tween_Info = CustomTweenInfo or TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
+
+    CustomBuilderModule.MakeModelReadyForBuild(Model)
+    
+    for _, BasePart in pairs(ThingsTable.BaseParts) do
+
+        local GoalCFrame = BasePart.CFrame
+        local UpCFrame = GoalCFrame:ToWorldSpace(CFrame.new(Vector3.new(0, CustomBuilderModule.Settings.ComesFromUp.HeightAmount, 0)))
+
+        BasePart.CFrame = UpCFrame
+
+        local Tween = TweenService:Create(BasePart, Tween_Info, {Transparency = 0, CFrame = GoalCFrame})
+        Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
+        
+        if WaitTimeBetweenEachPart then
+            task.wait(WaitTimeBetweenEachPart)
+        end
+
+    end
+end
+
+function CustomBuilderModule.ColorChange(Model: Model, WaitTimeBetweenEachPart: number, CustomTweenInfo: TweenInfo)
+
+    local ThingsTable = CreateSortedTableFromModel(Model)
+
+    local Tween_Info = CustomTweenInfo or TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
+
+    CustomBuilderModule.MakeModelReadyForBuild(Model)
+    
+    for _, BasePart in pairs(ThingsTable.BaseParts) do
+
+        local GoalColor = BasePart.Color
+
+        BasePart.Color = CustomBuilderModule.Settings.ColorChange.StartColor
+
+        local Tween = TweenService:Create(BasePart, Tween_Info, {Color = GoalColor, Transparency = 0})
+        Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
+        
+        if WaitTimeBetweenEachPart then
+            task.wait(WaitTimeBetweenEachPart)
+        end
+
+    end
+end
+
+function CustomBuilderModule.RotationAnimation(Model: Model, WaitTimeBetweenEachPart: number, CustomTweenInfo: TweenInfo)
+
+    local ThingsTable = CreateSortedTableFromModel(Model)
+
+    local Tween_Info = CustomTweenInfo or TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
+
+    CustomBuilderModule.MakeModelReadyForBuild(Model)
+    
+    for _, BasePart in pairs(ThingsTable.BaseParts) do
+
+        local GoalCFrame = BasePart.CFrame
+        local RotatedCFrame = GoalCFrame * CFrame.Angles(math.random(math.rad(-360),math.rad(360)),math.random(math.rad(-360),math.rad(360)),math.random(math.rad(-360),math.rad(360)))
+
+        BasePart.CFrame = RotatedCFrame
+
+        local Tween = TweenService:Create(BasePart, Tween_Info, {CFrame = GoalCFrame, Transparency = 0})
+        Tween:Play()
+
+        AfterAnimatingBasePart(BasePart)
+        
+        if WaitTimeBetweenEachPart then
+            task.wait(WaitTimeBetweenEachPart)
+        end
+
+    end
+end
 
 return CustomBuilderModule
